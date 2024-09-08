@@ -108,32 +108,24 @@ VOID PrintCoreInfo()
 
 VOID PrintVFPoints(IN PLATFORM* psys)
 {
-  for (UINTN pidx = 0; pidx < psys->PkgCnt; pidx++)
-  {
+  for (UINTN pidx = 0; pidx < psys->PkgCnt; pidx++) {
     PACKAGE* pac = psys->packages + pidx;
 
     AsciiPrint("Package #%u\n", pidx);
 
     for (UINTN didx = 0; didx < MAX_DOMAINS; didx++) {
       if (VoltageDomainExists((UINT8)didx)) {
-        if ((didx == IACORE) || (didx == RING)|| (didx==ECORE)) {
+        DOMAIN* dom = pac->planes + didx;
 
-          DOMAIN* dom = pac->planes + didx;
-
-          if ((pac->Program_VF_Points[didx] == 2) ||
-            (gPrintVFPoints_PostProgram != 0))
-          {
-            AsciiPrint("\n  Domain: %s, number of reported V/F points: %u\n",
-              &vrDomainPrStr[didx][0], dom->nVfPoints);
+        if ((pac->Program_VF_Points[didx] == 2) || (gPrintVFPoints_PostProgram != 0)) {
+          AsciiPrint("\n  Domain: %s, legacy: maxRatio: %u, vmode: %u, voffset: %d, vtarget: %u, number of reported V/F points: %u\n",
+            &vrDomainPrStr[didx][0], dom->MaxRatio, dom->VoltMode, dom->OffsetVolts, dom->TargetVolts, dom->nVfPoints);
+          if ((didx == IACORE) || (didx == RING) || (didx == ECORE)) {
 
             for (UINTN vidx = 0; vidx < dom->nVfPoints; vidx++) {
               VF_POINT* vp = dom->vfPoint + vidx;
-
-              AsciiPrint("    [%s][VFP#%u] V_offset = %d mV @ %u MHz\n",
-                &vrDomainPrStr[didx][0], 
-                vidx,                 
-                vp->VOffset,
-                vp->FusedRatio * gBCLK_bsp / 1000);
+                  
+              AsciiPrint("    [%s][VFP#%u] V_offset = %d mV @ %u MHz\n", &vrDomainPrStr[didx][0], vidx, vp->VOffset, vp->FusedRatio * gBCLK_bsp / 1000);
             }
           }
         }

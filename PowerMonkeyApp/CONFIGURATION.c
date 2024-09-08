@@ -158,7 +158,7 @@ VOID ApplyComputerOwnersPolicy(IN PLATFORM* sys)
     //
     // Hybrid architectures (Alder Lake+) - E-Cores
 
-    pk->Program_VF_Overrides[ECORE] = 1;        // Enable programming of VF
+    pk->Program_VF_Overrides[ECORE] = 0;        // Enable programming of VF
                                                 // Overrides for E-Cores
 
 
@@ -169,10 +169,10 @@ VOID ApplyComputerOwnersPolicy(IN PLATFORM* sys)
     pk->Program_VF_Overrides[UNCORE] =    1;    // Enable programming of VF
                                                 // Overrides for Uncore (SA)
 
-    pk->Program_VF_Overrides[GTSLICE] =   0;    // Enable programming of VF
+    pk->Program_VF_Overrides[GTSLICE] =   1;    // Enable programming of VF
                                                 // Overrides for GT Slice
 
-    pk->Program_VF_Overrides[GTUNSLICE] = 0;    // Enable programming of VF
+    pk->Program_VF_Overrides[GTUNSLICE] = 1;    // Enable programming of VF
                                                 // Overrides for GT Unslice
 
     // NOTE: some domains are sharing the same voltage plane! Check yours!
@@ -207,7 +207,7 @@ VOID ApplyComputerOwnersPolicy(IN PLATFORM* sys)
       pk->planes[RING].TargetVolts = 0;             // in mV (absolute)
 
     pk->planes[IACORE].OffsetVolts =
-    pk->planes[RING].OffsetVolts = 0;// -50;        // in mV 
+    pk->planes[RING].OffsetVolts = -125;// -50;        // in mV 
                                                     // (negative = undervolt)
     
     ///
@@ -229,7 +229,7 @@ VOID ApplyComputerOwnersPolicy(IN PLATFORM* sys)
                                                 // V_OVERRIDE =  Override
 
     pk->planes[UNCORE].TargetVolts = 0;         // in mV (absolute)
-    pk->planes[UNCORE].OffsetVolts = 0;// -35;  // in mV (negative = undervolt)
+    pk->planes[UNCORE].OffsetVolts = -125;// -35;  // in mV (negative = undervolt)
 
     // Add your adjustments here if needed    
 
@@ -237,11 +237,23 @@ VOID ApplyComputerOwnersPolicy(IN PLATFORM* sys)
     /// V/F OVERRIDES FOR DOMAIN: GT SLICE
     ///
 
+    pk->planes[GTSLICE].VoltMode = V_IPOLATIVE;  // V_IPOLATIVE = Interpolate
+    // V_OVERRIDE =  Override
+
+    pk->planes[GTSLICE].TargetVolts = 0;         // in mV (absolute)
+    pk->planes[GTSLICE].OffsetVolts = -100;// -35;  // in mV (negative = undervolt)
+
     // Add your adjustments here if needed
 
     ///
     /// V/F OVERRIDES FOR DOMAIN: GT UNSLICE
     ///
+
+    pk->planes[GTUNSLICE].VoltMode = V_IPOLATIVE;  // V_IPOLATIVE = Interpolate
+    // V_OVERRIDE =  Override
+
+    pk->planes[GTUNSLICE].TargetVolts = 0;         // in mV (absolute)
+    pk->planes[GTUNSLICE].OffsetVolts = -100;// -35;  // in mV (negative = undervolt)
 
     // Add your adjustments here if needed
 
@@ -272,17 +284,17 @@ VOID ApplyComputerOwnersPolicy(IN PLATFORM* sys)
     /// SVID, then you must program the same voltage adjustment for both
 
     pk->Program_VF_Points[IACORE] =                 // 0 - Do not program
-      pk->Program_VF_Points[RING] = 1;              // 1 - Program
+      pk->Program_VF_Points[RING] = 0;              // 1 - Program
                                                     // 2 - Print current values                                                    
                                                     //     (2 does not program)
     
     // Hybrid Architectures (Alder Lake +): E-Cores
 
                                                     // 1 - Program
-    pk->Program_VF_Points[ECORE] = 1;               // 0 - Do not program
+    pk->Program_VF_Points[ECORE] = 0;               // 0 - Do not program
                                                     // 2 - Print current values                                                    
                                                     //     (2 does not program)
-
+/*
     ///
     /// NOTE: VF Points here are ZERO INDEXED and can go from VP[0] to VP[14] !
     ///  *** CHECK YOUR CPU - ESPECIALLY # OF VF POINTS!!! ***
@@ -385,7 +397,7 @@ VOID ApplyComputerOwnersPolicy(IN PLATFORM* sys)
     pk->planes[ECORE].vfPoint[6].VOffset = 0;
 
 #endif
- 
+ */
     /////////////
     // ICC Max //
     /////////////
